@@ -39,65 +39,32 @@ Step 7: Plot the Input space and Hidden space of RBF NN for XOR classification.
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Gaussian RBF function
 def gaussian_rbf(x, landmark, gamma=1):
     return np.exp(-gamma * np.linalg.norm(x - landmark) ** 2)
 
-
-# RBF Neural Network
 def end_to_end(X1, X2, ys, mu1, mu2):
-
-    # Combine inputs
     X = np.column_stack((X1, X2))
 
-    # Calculate RBF values
     from_1 = np.array([gaussian_rbf(x, mu1) for x in X])
     from_2 = np.array([gaussian_rbf(x, mu2) for x in X])
 
-    # RBF feature matrix
     A = np.column_stack((from_1, from_2))
 
-    # Calculate weights
     weights = np.linalg.pinv(A).dot(ys)
 
-    # Plot input space and hidden space
     plt.figure(figsize=(12, 5))
 
-    # Input space
     plt.subplot(1, 2, 1)
-
-    plt.scatter(
-        (X1[0], X1[3]),
-        (X2[0], X2[3]),
-        label="Class 0"
-    )
-
-    plt.scatter(
-        (X1[1], X1[2]),
-        (X2[1], X2[2]),
-        label="Class 1"
-    )
-
+    plt.scatter((X1[0], X1[3]), (X2[0], X2[3]), label="Class 0")
+    plt.scatter((X1[1], X1[2]), (X2[1], X2[2]), label="Class 1")
     plt.xlabel("X1")
     plt.ylabel("X2")
     plt.title("XOR: Linearly Inseparable")
     plt.legend()
 
-    # Hidden space
     plt.subplot(1, 2, 2)
-
-    plt.scatter(
-        from_1[[0, 3]],
-        from_2[[0, 3]],
-        label="Class 0"
-    )
-
-    plt.scatter(
-        from_1[[1, 2]],
-        from_2[[1, 2]],
-        label="Class 1"
-    )
-
+    plt.scatter(from_1[[0, 3]], from_2[[0, 3]], label="Class 0")
+    plt.scatter(from_1[[1, 2]], from_2[[1, 2]], label="Class 1")
     plt.xlabel("RBF1")
     plt.ylabel("RBF2")
     plt.title("RBF Hidden Space")
@@ -107,41 +74,26 @@ def end_to_end(X1, X2, ys, mu1, mu2):
 
     return weights
 
-
-# Prediction function
 def predict_matrix(point, weights):
-
     mu1 = np.array([0, 1])
     mu2 = np.array([1, 0])
 
-    # Calculate RBF values
     phi1 = gaussian_rbf(point, mu1)
     phi2 = gaussian_rbf(point, mu2)
 
-    # Calculate output
     output = np.array([phi1, phi2]).dot(weights)
 
-    # Convert output to 0 or 1
     return np.round(output)
 
-
-# XOR input data
 x1 = np.array([0, 0, 1, 1])
 x2 = np.array([0, 1, 0, 1])
-
-# XOR expected output
 ys = np.array([0, 1, 1, 0])
 
-# Centers of RBF neurons
 mu1 = np.array([0, 1])
 mu2 = np.array([1, 0])
 
-
-# Train the RBF network
 weights = end_to_end(x1, x2, ys, mu1, mu2)
 
-
-# Test the RBF network
 print("XOR Classification Results")
 print("---------------------------")
 
@@ -154,8 +106,6 @@ for point in [
     prediction = predict_matrix(point, weights)
     print("Input:", point, "Predicted Output:", prediction)
 
-
-# Calculate accuracy
 inputs = [
     np.array([0, 0]),
     np.array([0, 1]),
